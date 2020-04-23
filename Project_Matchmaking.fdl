@@ -1,0 +1,169 @@
+(define-fuzzy-logic zadeh)
+(define-modifier very linear-modifier(0.8))
+
+(define-primitive-concept Laptop *top*)
+
+#ID 
+(functional hasID)
+(range hasID *integer* 0 99999999)
+
+# price 
+(functional hasPrice)
+(range hasPrice *real* 0 6000)
+(define-fuzzy-concept VeryLowPrice left-shoulder (0, 6000, 1400, 1800))
+(define-fuzzy-concept LowPrice triangular (0, 6000, 1700, 2100, 2500))
+(define-fuzzy-concept MediumPrice triangular (0, 6000, 2300, 2800, 3300))
+(define-fuzzy-concept HighPrice triangular (0, 6000, 3050, 4000, 5000))
+(define-fuzzy-concept VeryHighPrice right-shoulder (0, 6000, 4500, 5000))
+
+# rating
+(functional hasRating)
+(range hasRating *real* 0 5)
+(define-fuzzy-concept LowRating left-shoulder (0, 5, 1, 3))
+(define-fuzzy-concept MediumRating triangular (0, 5, 3, 3.5, 4))
+(define-fuzzy-concept HighRating right-shoulder (0, 5, 4, 4.5))
+
+# memorie RAM
+(functional hasMemory)
+(range hasMemory *integer* 0 16)
+
+# storage HDD
+(functional hasStorage)
+(range hasStorage *integer* 0 2048)
+(define-fuzzy-concept medStorage crisp (0, 2048, 500, 500))
+(define-fuzzy-concept highStorage right-shoulder (0, 2048, 1024, 1500))
+
+# color
+(functional hasColor)
+(domain hasColor Laptop)
+(range hasColor Color)
+(define-primitive-concept Color *top*)
+(instance ColorBlack Color 1.0)
+(instance ColorSilver Color 1.0)
+(instance ColorGrey Color 1.0)
+(disjoint ColorBlack ColorGrey ColorSilver)
+
+# laptop brands
+(functional hasBrand)
+(domain hasBrand Laptop)
+(range hasBrand Brand)
+(define-primitive-concept Brand *top*)
+(instance Asus Brand 1.0)
+(instance Apple Brand 1.0)
+(instance Dell Brand 1.0)
+(instance HP Brand 1.0)
+(instance Lenovo Brand 1.0)
+(disjoint Asus Apple Dell HP Lenovo)
+
+# laptop types
+(functional hasCategory)
+(domain hasCategory Laptop)
+(range hasCategory Category)
+(define-primitive-concept Category *top*)
+(instance Business Category 1.0)
+(instance Gaming Category 1.0)
+(instance Multimedia Category 1.0)
+(instance Graphics Category 1.0)
+(disjoint Business Gaming Multimedia Graphics)
+
+# processor frequency
+(functional hasFreq)
+(range hasFreq *integer* 0 3000)
+(define-fuzzy-concept lowProcFreq left-shoulder (0, 3000, 1200, 1600))
+(define-fuzzy-concept medProcFreq trapezoidal (0, 3000, 1600, 1800, 2400, 2600))
+(define-fuzzy-concept highProcFreq right-shoulder (0, 3000, 2600, 2800))
+
+# display size
+(functional hasDisplaySize)
+(range hasDisplaySize *real* 0 17)
+(define-fuzzy-concept smallDisplay left-shoulder (0, 17, 13, 14))
+(define-fuzzy-concept medDisplay triangular (0, 17, 14, 15, 16))
+(define-fuzzy-concept largeDisplay right-shoulder (0, 17, 16, 16.5))
+
+# weight
+(functional hasWeight)
+(range hasWeight *real* 0 5)
+(define-fuzzy-concept lowWeight left-shoulder (0, 5, 1, 2.5))
+(define-fuzzy-concept medWeight trapezoidal (0, 5, 2, 3, 3.5, 4))
+(define-fuzzy-concept highWeight right-shoulder (0, 5, 3.5, 4.5))
+
+# warranty
+(functional hasWarranty)
+(range hasWarranty *integer* 0 36)
+(define-fuzzy-concept shortWarranty crisp (0, 36, 12, 12))
+(define-fuzzy-concept medWarranty crisp (0, 36, 24, 24))
+(define-fuzzy-concept longWarranty crisp (0, 36, 36, 36))
+
+# processor family
+(functional hasProcessor)
+(domain hasProcessor Laptop)
+(range hasProcessor Processor)
+(define-primitive-concept Processor *top*)
+(instance IntelCore_I3 Processor 1.0)
+(instance IntelCore_I5 Processor 1.0)
+(instance IntelCore_I7 Processor 1.0)
+(disjoint IntelCore_I3 IntelCore_I5 IntelCore_I7)
+
+# video card
+(functional hasVideoCard)
+(domain hasVideoCard Laptop)
+(range hasVideoCard VideoCard)
+(disjoint IntegratedVideoCard DedicatedVideoCard)
+(define-primitive-concept VideoCard *top*)
+(instance IntegratedVideoCard VideoCard 1.0)
+(instance DedicatedVideoCard VideoCard 1.0)
+
+# OS
+(functional hasOS)
+(domain hasOS Laptop)
+(range hasOS OS)
+(disjoint Windows Linux)
+(disjoint Windows NoOS)
+(disjoint Linux NoOS)
+(instance Windows OS 1.0)
+(instance Linux OS 1.0)
+(instance NoOS OS 1.0)
+
+# SSD 
+(functional hasSSD)
+(domain hasSSD Laptop)
+(range hasSSD *boolean*)
+
+(define-concept Laptop1 (and Laptop											(= hasID 12345678)													(some hasPrice MediumPrice)											(= hasRating 4.3)													(= hasMemory 8)														(some hasStorage medStorage)										(some hasColor ColorGrey)											(some hasBrand HP)													(some hasCategory Multimedia)										(some hasFreq medProcFreq)											(some hasDisplaySize medDisplay)									(some hasWeight medWeight)											(some hasWarranty medWarranty)										(some hasProcessor IntelCore_I5)									(some hasVideoCard DedicatedVideoCard)								(some hasOS Windows)												(= hasSSD false)))
+
+(instance Laptop1I Laptop1 1.0)
+
+(define-concept Laptop2 (and Laptop											(= hasID 18362913)													(some hasPrice HighPrice)											(= hasRating 4.8)													(= hasMemory 16)													(some hasStorage (very highStorage))								(some hasColor ColorBlack)											(some hasBrand Asus)												(some hasCategory Gaming)											(some hasFreq highProcFreq)											(some hasDisplaySize largeDisplay)									(some hasWeight medWeight)											(some hasWarranty longWarranty)										(some hasProcessor IntelCore_I7)									(some hasVideoCard DedicatedVideoCard)								(some hasOS Windows)												(= hasSSD true)))
+
+(instance Laptop2I Laptop2 1.0)
+
+(define-concept Laptop3 (and Laptop											(= hasID 42830268)													(= hasPrice 4600)													(= hasRating 4.5)													(= hasMemory 16)													(some hasStorage highStorage)										(some hasColor ColorSilver)											(some hasBrand Dell)												(some hasCategory Gaming)											(some hasFreq highProcFreq)											(some hasDisplaySize largeDisplay)									(some hasWeight highWeight)											(some hasWarranty longWarranty)										(some hasProcessor IntelCore_I7)									(some hasVideoCard DedicatedVideoCard)								(some hasOS Windows)												(= hasSSD true)))
+
+(instance Laptop3I Laptop3 1.0)
+
+(define-fuzzy-concept price2 left-shoulder (0, 6000, 3500, 4000))
+(define-fuzzy-concept price3 right-shoulder (0, 6000, 4300, 4600))
+(define-fuzzy-concept price4 left-shoulder (0, 6000, 4500, 4700))
+(define-fuzzy-concept freq2 right-shoulder (0, 3000, 2700, 3000))
+(define-fuzzy-concept rating1 right-shoulder (0, 5, 4, 4.6))
+
+
+(define-fuzzy-concept price1 left-shoulder (0, 6000, 2600, 3000))
+
+
+(define-fuzzy-concept freq1 right-shoulder (0, 3000, 2000, 2400))
+
+(define-concept Pref1 (and 													(some hasPrice price1)												(some hasBrand (or HP Asus))										(some hasFreq freq1)												(some hasColor (w-sum (0.8 ColorGrey) (0.2 ColorBlack)))			(some hasProcessor (w-sum (0.7 IntelCore_I7) 												  (0.3 IntelCore_I5)))))
+
+(define-concept Pref2 (and 													(some hasPrice price2)												(some hasBrand (or HP Asus))										(some hasFreq freq2)))
+
+(define-concept Pref3 (and													(some hasPrice price4)												(some hasRating rating1) 											(some hasMemory {16})												(some hasColor (w-sum (0.7 ColorSilver) (0.3 ColorBlack)))			(some hasBrand (w-sum (0.6 Dell) (0.2 HP) (0.2 Asus)))				(some hasCategory (w-sum (0.8 Gaming) (0.2 Multimedia)))))
+
+
+(show-concrete-fillers hasPrice hasFreq hasRating)
+(show-abstract-fillers hasId hasBrand hasColor hasProcessor)
+
+#(max-sat? (and Pref1 Laptop1))
+#(max-sat? (and Pref2 Laptop2))
+(max-sat? (and Pref1 Laptop1))
+#(max-sat? (and Pref3 Laptop3))
